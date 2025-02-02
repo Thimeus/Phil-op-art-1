@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optische Täuschungen & OP-Art</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <style>
+        :root {
+            --primary-color: #2d00f7;
+            --secondary-color: #e100ff;
+            --text-color: #333;
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .header {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            padding: 2rem;
+        }
+
+        .header h1 {
+            font-size: 5rem;
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .content {
+            max-width: 1400px;
+            margin: -100px auto 0;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(50px);
+            opacity: 0;
+            animation: slideUp 1s ease-out forwards;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .canvas-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .canvas-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .canvas-container {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .code-highlight {
+            color: #569cd6;
+        }
+
+        .explanation {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 3rem;
+            }
+            .content {
+                margin-top: -50px;
+                padding: 1rem;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .banner-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .banner-image {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .footer-text {
+            font-size: 1.2rem;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Optische Täuschungen & OP-Art</h1>
+    </header>
+
+    <main class="content">
+        <section class="card">
+            <h2>Was ist OP-Art?</h2>
+            <p>Op-Art, kurz für Optical Art, ist eine Kunstrichtung, die mit visuellen Effekten und optischen Täuschungen arbeitet. Sie verwendet Muster, Farben und Formen, um beim Betrachter den Eindruck von Bewegung, Tiefe oder Vibration zu erzeugen.</p>
+            
+            <div class="gallery">
+                <img src="https://raw.githubusercontent.com/Thimeus/Phil-op-art-1/main/op-art%201.png" alt="Op-Art Beispiel 1">
+                <img src="https://raw.githubusercontent.com/Thimeus/Phil-op-art-1/main/op-art%202.png" alt="Op-Art Beispiel 2">
+                <img src="https://raw.githubusercontent.com/Thimeus/Phil-op-art-1/main/Bild%201.png" alt="Op-Art Beispiel 3">
+                <img src="https://raw.githubusercontent.com/Thimeus/Phil-op-art-1/main/Bild%204.png" alt="Op-Art Beispiel 4">
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Interaktive Beispiele</h2>
+            <div class="grid">
+                <div class="canvas-card">
+                    <h3>Würfel 1</h3>
+                    <div id="canvas-container-1" class="canvas-container"></div>
+                    <p>Ein einfacher Würfel mit Schatteneffekt und Kameraperspektive.</p>
+                </div>
+                <div class="canvas-card">
+                    <h3>Würfel 2</h3>
+                    <div id="canvas-container-2" class="canvas-container"></div>
+                    <p>Drei ineinander geschachtelte Würfel mit wechselnden Farben und Rotation.</p>
+                </div>
+                <div class="canvas-card">
+                    <h3>Würfel 3</h3>
+                    <div id="canvas-container-3" class="canvas-container"></div>
+                    <p>Ein Würfel mit 6 unterschiedlichen sich bewegenden Mustern.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Code & Erklärungen</h2>
+            <div class="code-block">
+                <h3>Würfel 1 - Grundlegender Code</h3>
+                <pre><code>
+function setup() {
+    createCanvas(400, 400, WEBGL);
+}
+
+function draw() {
+    background(220);
+    
+    // Kamera-Steuerung mit Maus
+    orbitControl();
+    
+    // Licht hinzufügen
+    directionalLight(255, 255, 255, 0, 0, -1);
+    ambientLight(100);
+    
+    // Würfel-Styling
+    fill(135, 206, 250);  // Hellblauer Farbton
+    noStroke();
+    
+    // Rotation
+    rotateX(frameCount * 0.01);
+    rotateY(frameCount * 0.01);
+    
+    // Würfel zeichnen
+    box(100);
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h3>Erklärung - Würfel 1</h3>
+                <div class="explanation-item">
+                    <h4>WEBGL-Modus:</h4>
+                    <ul>
+                        <li>Ermöglicht 3D-Operationen</li>
+                        <li>Koordinatensystem ist im Zentrum der Leinwand (0,0,0)</li>
+                    </ul>
+                </div>
+
+                <div class="explanation-item">
+                    <h4>Lichtberechnung:</h4>
+                    <ul>
+                        <li><span class="code-highlight">directionalLight()</span> erzeugt Schattenwurf</li>
+                        <li><span class="code-highlight">ambientLight()</span> verhindert komplett schwarze Schatten</li>
+                        <li>Lichtparameter können animiert werden (z.B. mit <span class="code-highlight">sin()</span>-Funktion)</li>
+                    </ul>
+                </div>
+
+                <div class="explanation-item">
+                    <h4>Rotationsgeschwindigkeit:</h4>
+                    <ul>
+                        <li><span class="code-highlight">frameCount</span> erhöht sich automatisch um 1 pro Frame</li>
+                        <li>0.01 ist der Geschwindigkeitsmultiplikator</li>
+                        <li>Beispiel: Bei 60 FPS = 60 * 0.01 = 0.6 Radiant/Sekunde</li>
+                    </ul>
+                </div>
+
+                <div class="explanation-item">
+                    <h4>Größenanpassung:</h4>
+                    <ul>
+                        <li>Aktueller Wert: 100 Pixel Kantenlänge</li>
+                        <li>Kann durch Ändern des Wertes in <span class="code-highlight">box()</span> angepasst werden</li>
+                        <li>Wertebereich typisch: 50-400 Pixel (abhängig von Leinwandgröße)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <h3>Würfel 2 - Erweiterter Code</h3>
+                <pre><code>
+function setup() {
+    createCanvas(1000, 1000, WEBGL);
+    angleMode(DEGREES);
+}
+
+function draw() {
+    background(0);
+    orbitControl();
+    
+    // Paradoxe Beleuchtung
+    directionalLight(255, 0, 0, -1, 1, -1);  // Rotes Licht
+    directionalLight(0, 255, 0, 1, -1, 1);   // Grünes Licht
+    
+    // Hypnotische Rotation
+    rotateX(frameCount * 0.7);
+    rotateY(frameCount * 0.5);
+    rotateZ(frameCount * 0.3);
+    
+    // Interferenzmuster
+    noFill();
+    strokeWeight(2);
+    
+    // 3 ineinandergeschachtelte Würfel
+    for(let i = 0; i < 3; i++) {
+        push();
+        stroke(
+            map(sin(frameCount*2 + i*50), -1, 1, 0, 255),
+            map(cos(frameCount*2 + i*50), -1, 1, 0, 255),
+            map(sin(frameCount*2 + i*50 + 90), -1, 1, 0, 255)
+        );
+        
+        let scaleFactor = 1 + sin(frameCount*0.5 + i*30)*0.2;
+        scale(scaleFactor);
+        box(250 + i*30);
+        pop();
+    }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h3>Erklärung - Würfel 2</h3>
+                <div class="explanation-item">
+                    <h4>Setup & Grundeinstellungen:</h4>
+                    <ul>
+                        <li><span class="code-highlight">angleMode(DEGREES)</span> ändert die Winkeleinheit von Radiant zu Grad</li>
+                        <li><span class="code-highlight">orbitControl()</span> ermöglicht das Bewegen der Kameraperspektive</li>
+                    </ul>
+                </div>
+
+                <div class="explanation-item">
+                    <h4>Beleuchtung & Effekte:</h4>
+                    <ul>
+                        <li>Zwei gegensätzliche Lichtquellen (rot und grün) erzeugen interessante Farbeffekte</li>
+                        <li>Rotation um alle drei Achsen mit unterschiedlichen Geschwindigkeiten</li>
+                        <li>Verwendung von <span class="code-highlight">push()</span> und <span class="code-highlight">pop()</span> für isolierte Transformationen</li>
+                    </ul>
+                </div>
+
+                <div class="explanation-item">
+                    <h4>Animation & Farben:</h4>
+                    <ul>
+                        <li>Dynamische Farbänderungen durch <span class="code-highlight">map()</span> und Sinusfunktionen</li>
+                        <li>Pulsierende Skalierung durch <span class="code-highlight">scaleFactor</span></li>
+                        <li>Geschachtelte Würfel mit unterschiedlichen Größen und Animationsphasen</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="banner-container">
+            <img src="https://raw.githubusercontent.com/Thimeus/Phil-op-art-1/main/banner.png" alt="Banner" class="banner-image">
+            <p class="footer-text">Phil Scheller / KUNST / Klasse 7d | Johan-Gutenberg-Schule Bremerhaven</p>
+        </div>
+    </footer>
+
+    <script>
+        // Original p5.js sketches
+        // Separate Sketches für jeden Würfel
+let sketch1, sketch2, sketch3;
+
+const s = (p) => {
+            let canvas;
+            p.setup = function() {
+                // Erstelle Canvas mit der Größe des Containers
+                let container = document.getElementById('canvas-container-1');
+                canvas = p.createCanvas(container.offsetWidth, container.offsetWidth, p.WEBGL);
+            }
+            
+            p.draw = function() {
+                p.background(220);
+                p.orbitControl();
+                
+                p.directionalLight(255, 255, 255, 0, 0, -1);
+                p.ambientLight(100);
+                
+                p.fill(135, 206, 250);
+                p.noStroke();
+                
+                p.rotateX(p.frameCount * 0.01);
+                p.rotateY(p.frameCount * 0.01);
+                
+                p.box(100);
+            }
+        };
+
+        const t = (p) => {
+            p.setup = function() {
+                p.createCanvas(300, 300, p.WEBGL);
+                p.angleMode(p.DEGREES);
+            }
+            
+            p.draw = function() {
+                p.background(0);
+                p.orbitControl();
+                
+                p.directionalLight(255, 0, 0, -1, 1, -1);
+                p.directionalLight(0, 255, 0, 1, -1, 1);
+                
+                p.rotateX(p.frameCount * 0.7);
+                p.rotateY(p.frameCount * 0.5);
+                p.rotateZ(p.frameCount * 0.3);
+                
+                p.noFill();
+                p.strokeWeight(2);
+                
+                for(let i = 0; i < 3; i++) {
+                    p.push();
+                    p.stroke(
+                        p.map(p.sin(p.frameCount*2 + i*50), -1, 1, 0, 255),
+                        p.map(p.cos(p.frameCount*2 + i*50), -1, 1, 0, 255),
+                        p.map(p.sin(p.frameCount*2 + i*50 + 90), -1, 1, 0, 255)
+                    );
+                    
+                    let scaleFactor = 1 + p.sin(p.frameCount*0.5 + i*30)*0.2;
+                    p.scale(scaleFactor);
+                    
+                    p.box(250 + i*30);
+                    p.pop();
+                }
+            }
+        };
+
+        const u = (p) => {
+            p.setup = function() {
+                // Erstelle Canvas mit der Größe des Containers
+                let container = document.getElementById('canvas-container-3');
+                canvas = p.createCanvas(container.offsetWidth, container.offsetWidth, p.WEBGL);
+                p.angleMode(p.DEGREES);
+            }
+            
+            p.draw = function() {
+                p.background(50);
+                p.orbitControl();
+                p.lights();
+                
+                let cubeSize = p.width / 2; // Größe an Container anpassen
+                let rotationSpeed = 0.01;
+                
+                p.rotateX(p.frameCount * rotationSpeed);
+                p.rotateY(p.frameCount * rotationSpeed * 1.2);
+                
+                drawCubeFaces(p, cubeSize);
+            }
+            
+            function drawCubeFaces(p, size) {
+                // Front
+                p.push();
+                p.translate(0, 0, size/2);
+                drawPattern1(p, size);
+                p.pop();
+                
+                // Back
+                p.push();
+                p.translate(0, 0, -size/2);
+                p.rotateY(180);
+                drawPattern2(p, size);
+                p.pop();
+                
+                // Left
+                p.push();
+                p.translate(-size/2, 0, 0);
+                p.rotateY(-90);
+                drawPattern3(p, size);
+                p.pop();
+                
+                // Right
+                p.push();
+                p.translate(size/2, 0, 0);
+                p.rotateY(90);
+                drawPattern4(p, size);
+                p.pop();
+                
+                // Top
+                p.push();
+                p.translate(0, -size/2, 0);
+                p.rotateX(90);
+                drawPattern5(p, size);
+                p.pop();
+                
+                // Bottom
+                p.push();
+                p.translate(0, size/2, 0);
+                p.rotateX(-90);
+                drawPattern6(p, size);
+                p.pop();
+            }
+            
+            function drawPattern1(p, size) {
+                p.fill(255);
+                p.rect(-size/2, -size/2, size, size);
+                for(let i = 0; i < 10; i++) {
+                    p.fill(i % 2 === 0 ? 255 : 0);
+                    p.rect(-size/2 + i*size/10, -size/2, size/10, size);
+                }
+            }
+            
+            function drawPattern2(p, size) {
+                for(let i = 0; i < 8; i++) {
+                    for(let j = 0; j < 8; j++) {
+                        p.fill((i + j) % 2 === 0 ? 255 : 0);
+                        p.rect(-size/2 + i*size/8, -size/2 + j*size/8, size/8, size/8);
+                    }
+                }
+            }
+            
+            function drawPattern3(p, size) {
+                p.noStroke();
+                for(let i = 0; i < 5; i++) {
+                    p.fill(255, 150 + i*20, 0);
+                    let x = size/3 * p.cos(p.frameCount + i*72);
+                    let y = size/3 * p.sin(p.frameCount + i*72);
+                    let ellipseSize = size/10 + p.sin(p.frameCount*0.1)*size/20;
+                    p.ellipse(x, y, ellipseSize);
+                }
+            }
+            
+            function drawPattern4(p, size) {
+                p.stroke(255);
+                p.strokeWeight(2);
+                for(let i = -5; i <= 5; i++) {
+                    let offset = p.frameCount % 50;
+                    p.line(-size/2 + offset, size/2 * i/5, size/2 - offset, size/2 * i/5);
+                }
+            }
+            
+            function drawPattern5(p, size) {
+                p.stroke(0, 255, 0);
+                p.noFill();
+                p.strokeWeight(size/50);
+                for(let r = 0; r < size; r += size/10) {
+                    p.arc(0, 0, r, r, p.frameCount % 360, (p.frameCount % 360) + 270);
+                }
+            }
+            
+            function drawPattern6(p, size) {
+                p.stroke(0, 100, 255);
+                p.noFill();
+                p.strokeWeight(1);
+                for(let y = -size/2; y < size/2; y += 10) {
+                    p.beginShape();
+                    for(let x = -size/2; x <= size/2; x += 5) {
+                        p.vertex(x, y + p.sin(x*0.1 + p.frameCount*0.1)*10);
+                    }
+                    p.endShape();
+                }
+            }
+        };
+
+        // Warte bis das DOM geladen ist
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialisiere die Sketches und binde sie an die Container
+    sketch1 = new p5(s, 'canvas-container-1');
+    sketch2 = new p5(t, 'canvas-container-2');
+    sketch3 = new p5(u, 'canvas-container-3');
+});
+
+        // Intersection Observer for animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'slideUp 1s ease-out forwards';
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
